@@ -1,0 +1,6 @@
+name = "ratgames-worker"
+compatibility_date = "2025-05-19"
+
+type = "javascript"  # since your worker is JS (not WASM or something else)
+
+main = "./sw.js"     # path to your worker script file
