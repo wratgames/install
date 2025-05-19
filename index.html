@@ -2,46 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Install Rat Games</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rat Games</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#222222" />
-
+  
+  <!-- Link to manifest (served as a separate file) -->
+  <link rel="manifest" href="manifest.json" />
+  
   <!-- Favicon -->
-  <link rel="icon" href="https://ratgames.netlify.app/media/favicon.png" type="image/png" />
-
-  <!-- Dynamically inject manifest -->
-  <script>
-    const manifest = {
-      name: "Rat Games",
-      short_name: "RatGames",
-      start_url: "https://ratgames.netlify.app",
-      display: "standalone",
-      background_color: "#222222",
-      theme_color: "#222222",
-      icons: [
-        {
-          src: "https://ratgames.netlify.app/media/favicon.png",
-          sizes: "192x192",
-          type: "image/png"
-        },
-        {
-          src: "https://ratgames.netlify.app/media/favicon.png",
-          sizes: "512x512",
-          type: "image/png"
-        }
-      ]
-    };
-
-    const stringManifest = JSON.stringify(manifest);
-    const blob = new Blob([stringManifest], { type: 'application/json' });
-    const manifestURL = URL.createObjectURL(blob);
-
-    const link = document.createElement('link');
-    link.rel = 'manifest';
-    link.href = manifestURL;
-    document.head.appendChild(link);
-  </script>
-
+  <link rel="icon" href="media/favicon.png" type="image/png" />
+  
   <style>
     body {
       font-family: sans-serif;
@@ -50,7 +20,6 @@
       text-align: center;
       padding: 50px;
     }
-
     button {
       font-size: 20px;
       padding: 12px 24px;
@@ -60,15 +29,14 @@
       cursor: pointer;
       margin-top: 20px;
     }
-
     button:hover {
       background: #00dd77;
     }
   </style>
 </head>
 <body>
-  <h1>🐀 Install Rat Games</h1>
-  <p>Add Rat Games to your home screen for easy access.</p>
+  <h1>🐀 Rat Games</h1>
+  <p>Welcome! Install Rat Games for easy access.</p>
   <button id="installBtn" style="display:none;">⬇️ Install</button>
 
   <script>
@@ -84,26 +52,21 @@
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
-            console.log('✅ User accepted install');
+            console.log('User accepted the install prompt');
           } else {
-            console.log('❌ User dismissed install');
+            console.log('User dismissed the install prompt');
           }
           deferredPrompt = null;
+          installBtn.style.display = 'none';
         });
       });
     });
 
-    // Register a basic service worker
+    // Register service worker
     if ('serviceWorker' in navigator) {
-      const swBlob = new Blob([`
-        self.addEventListener('install', e => self.skipWaiting());
-        self.addEventListener('activate', e => console.log('SW activated'));
-      `], { type: 'application/javascript' });
-
-      const swURL = URL.createObjectURL(swBlob);
-      navigator.serviceWorker.register(swURL)
-        .then(() => console.log('✅ Service Worker registered'))
-        .catch(err => console.error('❌ SW error:', err));
+      navigator.serviceWorker.register('/sw.js')
+        .then(() => console.log('Service Worker registered'))
+        .catch((e) => console.error('Service Worker registration failed:', e));
     }
   </script>
 </body>
